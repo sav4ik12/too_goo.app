@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TooGoo — курьер</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Заберём посылки с ПВЗ, купим продукты по списку и выполним любое поручение.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F7FA;--panel:#fff;--ink:#0E1B33;--muted:#55627A;--line:#D9E0EA;
+  --accent:#FFC21A;--on-accent:#0E1B33;--deep:#0E1B33;--on-deep:#EAF0FA;
+  --display:"Unbounded","Arial Black",Arial,sans-serif;
+  --body:"Onest","Segoe UI",Roboto,Arial,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1424;--panel:#131F36;--ink:#EAF0FA;--muted:#9AA8C2;--line:#22304A;--deep:#060C18;
+}}
+:root[data-theme="dark"]{--bg:#0B1424;--panel:#131F36;--ink:#EAF0FA;--muted:#9AA8C2;--line:#22304A;--deep:#060C18}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;overflow-x:clip;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.logo{font:700 22px var(--display);text-decoration:none;letter-spacing:-.02em}
+.logo i{font-style:normal;background:var(--accent);color:var(--on-accent);padding:0 .25em;border-radius:6px;margin-left:2px}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);font:600 16px var(--body);padding:13px 22px;border-radius:12px;text-decoration:none;border:0;cursor:pointer}
+.btn:hover{filter:brightness(.95)}
+.btn.small{padding:9px 16px;font-size:15px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(30px,5.6vw,52px);font-weight:700;max-width:14em}
+h2{font-size:clamp(24px,3.6vw,34px);font-weight:700;margin-bottom:28px}
+h3{font-size:19px;font-weight:500}
+p{margin:0}
+.muted{color:var(--muted)}
+section{padding:56px 0}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:28px 0 64px}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:30em;margin:20px 0 28px}
+.hero .note{margin-top:14px;font-size:14px;color:var(--muted)}
+.track{background:var(--deep);color:var(--on-deep);border-radius:24px;padding:22px;max-width:380px;justify-self:end;width:100%}
+.track .status{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;opacity:.8}
+.track strong{display:block;font:500 22px var(--display);margin:6px 0 14px;color:#fff}
+.track svg{display:block;width:100%;height:auto;border-radius:14px;background:#16264a}
+.route{stroke-dasharray:6 8;animation:dash 1.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-28}}
+.track .eta{display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14);font-size:15px}
+.stages{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;font-size:14px}
+.stages li{display:flex;gap:10px;align-items:center;opacity:.5}
+.stages li::before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.stages li.on{opacity:1}.stages li.on::before{background:var(--accent)}
+
+/* services: rows, not cards */
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:24px;padding:26px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.row p{color:var(--muted)}
+
+/* couriers */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pane{border-radius:20px;padding:28px;background:var(--panel);border:1px solid var(--line)}
+.pane.dark{background:var(--deep);color:var(--on-deep);border-color:transparent}
+.pane.dark p{color:#B6C3DC}
+.pane h3{margin-bottom:10px}
+.pane p{color:var(--muted)}
+.tag{display:inline-block;margin-top:18px;font-weight:600;font-size:15px}
+.prio{margin-top:20px;padding:18px 22px;border-radius:16px;background:var(--accent);color:var(--on-accent);font-weight:500}
+
+/* steps: a real sequence */
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.steps li{counter-increment:s;padding-top:18px;position:relative}
+.steps li::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--ink);transform-origin:left}
+.steps li::before{content:counter(s);display:block;font:700 34px var(--display);margin-bottom:6px}
+.steps h3{margin-bottom:6px;font-size:18px}
+.steps p{color:var(--muted);font-size:16px}
+
+/* plus */
+.plus{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:36px}
+.plus ul{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.plus li{padding-left:28px;position:relative}
+.plus li::before{content:"";position:absolute;left:0;top:.6em;width:14px;height:8px;border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:translateY(-60%) rotate(-45deg)}
+
+/* download */
+.dl{background:var(--deep);color:var(--on-deep);border-radius:28px;padding:44px 36px}
+.dl h2{color:#fff;margin-bottom:12px}
+.dl p{color:#B6C3DC;max-width:38em}
+.dl .btn{margin:20px 0 0}
+.hash{display:block;font:13px/1.5 ui-monospace,Consolas,monospace;word-break:break-all;background:rgba(255,255,255,.08);padding:12px 14px;border-radius:10px;color:#DCE6F7}
+.dl small{display:block;margin-top:8px;color:#8FA0BF;font-size:13px}
+footer{padding:36px 0 44px;color:var(--muted);font-size:14px}
+
+
+
+/* small delights */
+::selection{background:var(--accent);color:var(--on-accent)}
+.btn{position:relative;overflow:hidden;transition:transform .2s,filter .2s}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-120%)}
+.btn:hover::after{transform:translateX(120%);transition:transform .7s}
+.btn:active{transform:scale(.96)}
+.logo i{display:inline-block}
+.logo:hover i{animation:wig .6s}
+@keyframes wig{25%{transform:rotate(-8deg) scale(1.08)}60%{transform:rotate(6deg)}}
+.prio{position:relative;overflow:hidden}
+.prio::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);transform:translateX(-120%)}
+.js .prio.in::after{transform:translateX(120%);transition:transform 1.4s ease 1s}
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px;margin:22px 0 14px}
+.seg button{font:600 15px var(--body);border:0;background:none;color:var(--muted);padding:8px 20px;border-radius:9px;cursor:pointer;transition:background .3s,color .3s}
+.seg button.on{background:var(--accent);color:var(--on-accent)}
+.price{font:700 clamp(34px,5vw,46px)/1.1 var(--display);letter-spacing:-.02em;margin-bottom:6px}
+.price small{font:500 17px var(--body);letter-spacing:0;color:var(--muted);margin-left:8px}
+.cf{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:30}
+
+/* motion */
+#prog{position:fixed;top:env(safe-area-inset-top,0px);left:0;height:4px;width:calc(var(--p,0)*100%);background:var(--accent);z-index:20;pointer-events:none}
+#prog::after{content:"";position:absolute;right:-7px;top:-5px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid var(--ink)}
+.js h1 .w{display:inline-block;opacity:0;transform:translateX(-.9em)}
+.js h1.in .w{opacity:1;transform:none;transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i)*.09s + .05s)}
+.js .rv{opacity:0;transform:translateX(calc(var(--x,64px)*-1));transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1.2s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .rv.r{transform:translateX(var(--x,64px))}
+.js .rv.in{opacity:1;transform:none}
+.js .steps li::after{transform:scaleX(0);transition:transform 1.4s cubic-bezier(.2,.7,.2,1) .3s}
+.js .steps li.in::after{transform:none}
+.row{position:relative}
+.row::before{content:"";position:absolute;left:0;bottom:-1px;height:3px;width:0;background:var(--accent);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.row:hover::before{width:100%}
+.row h3{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.row:hover h3{transform:translateX(14px)}
+.track{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+@media (max-width:820px){
+  :root{--x:32px}
+  .hero,.plus,.duo,.steps,.row{grid-template-columns:1fr}
+  .track{justify-self:start}
+  .row{gap:6px}
+  section{padding:40px 0}
+  .plus,.dl{padding:26px 20px}
+}
+@media (prefers-reduced-motion:reduce){.route{animation:none}html{scroll-behavior:auto}.js h1 .w{opacity:1;transform:none;transition:none}.js .rv{opacity:1;transform:none;transition:none}.js .steps li::after{transform:none;transition:none}.btn::after,.prio::after{display:none}.logo:hover i{animation:none}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<div id="prog" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <a class="logo" href="#top" aria-label="TooGoo">Too<i>Goo</i></a>
+    <a class="btn small" href="#download">Скачать</a>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <h1>Курьер заберёт и привезёт всё</h1>
+        <p class="lead">Посылки с пунктов выдачи, продукты по вашему списку и любые небольшие поручения. Укажите два адреса, выберите курьера и следите за ним на карте.</p>
+        <a class="btn" href="#download">Скачать для Android</a>
+        <p class="note">Бесплатное приложение, заказ оформляется в пару касаний</p>
+      </div>
+      <div class="track" aria-label="Пример экрана отслеживания заказа">
+        <div class="status"><span>Заказ в пути</span><span id="eta">~12 мин</span></div>
+        <strong id="ttl">Курьер в пути</strong>
+        <svg viewBox="0 0 320 180" role="img" aria-label="Маршрут курьера на карте">
+          <g stroke="#2a3d6b" stroke-width="10" fill="none" stroke-linecap="round">
+            <path d="M-10 40 H330"/><path d="M-10 130 H330"/><path d="M70 -10 V190"/><path d="M200 -10 V190"/><path d="M270 -10 V190"/>
+          </g>
+          <path id="rt" class="route" d="M70 130 V40 H200 V130 H270" fill="none" stroke="#FFC21A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="70" cy="130" r="9" fill="#fff"/>
+                    <rect x="261" y="121" width="18" height="18" rx="4" fill="#fff"/>
+          <circle id="dot" r="9" fill="#FFC21A" stroke="#0E1B33" stroke-width="3"><animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;1" keyTimes="0;.6;1"><mpath href="#rt"/></animateMotion></circle>
+        </svg>
+        <div class="eta"><span>Едет к вам</span><span>до вас</span></div>
+        <ul class="stages">
+          <li class="on">Курьер в пути</li>
+          <li>Курьер на месте!</li>
+          <li>Заказ доставлен по адресу</li>
+        </ul>
+      </div>
+    </div>
+
+    <section>
+      <h2>Что можно заказать</h2>
+      <div class="rows">
+        <div class="row"><h3>Забрать с ПВЗ</h3><p>Wildberries, Ozon, Яндекс.Маркет — заберём и привезём.</p></div>
+        <div class="row"><h3>Закупка продуктов</h3><p>Магнит, Пятёрочка, Монетка — купим по вашему списку.</p></div>
+        <div class="row"><h3>Другое поручение</h3><p>Документы, вещи из химчистки и другие поручения.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Курьер под ваш заказ</h2>
+      <div class="duo">
+        <div class="pane"><h3>Курьер</h3><p>Небольшая посылка или пакет: курьер доберётся пешком, без машины.</p><span class="tag">Лёгкий заказ, до 8 кг</span></div>
+        <div class="pane dark"><h3>Курьер на машине</h3><p>Сумки с продуктами, коробки, тяжёлые вещи — повезём на машине.</p><span class="tag">Тяжёлый заказ</span></div>
+      </div>
+      <p class="prio">Хотите быстрее? Добавьте к цене — курьер возьмёт заказ в приоритет.</p>
+    </section>
+
+    <section>
+      <h2>Как это работает</h2>
+      <ol class="steps">
+        <li><h3>Укажите оба адреса</h3><p>Откуда забрать (магазин, ПВЗ или адрес) и куда доставить. Комментарий можно добавить, например этаж без домофона.</p></li>
+        <li><h3>Выберите курьера и цену</h3><p>Курьер или курьер на машине, обычная доставка или с приоритетом. Итоговая стоимость видна до заказа.</p></li>
+        <li><h3>Следите за курьером</h3><p>Заказ отображается на карте, а все прошлые доставки сохраняются в истории заказов.</p></li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="plus">
+        <div>
+          <h2 style="margin-bottom:12px">Подписка Плюс</h2>
+          <p class="muted">Для тех, кто заказывает регулярно. Без обязательств: отменить можно в любой момент.</p>
+          <div class="seg" role="group" aria-label="Период подписки">
+            <button type="button" class="on" aria-pressed="true" data-p="4000" data-u="в год" data-n="Выгоднее, чем платить помесячно, на 3 200 ₽ в год">Год</button>
+            <button type="button" aria-pressed="false" data-p="600" data-u="в месяц" data-n="Оплата помесячно, отмена в любой момент">Месяц</button>
+          </div>
+          <p class="price"><span id="pr">4 000</span> ₽<small id="pu">в год</small></p>
+          <p class="muted" id="pn">Выгоднее, чем платить помесячно, на 3 200 ₽ в год</p>
+        </div>
+        <ul>
+          <li>Доставка дешевле на каждый заказ</li>
+          <li>Приоритет: курьер берёт ваш заказ первым</li>
+          <li>Без доплаты за приоритет</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="dl">
+        <h2>Скачайте TooGoo</h2>
+        <a class="btn" id="apk" href="toogoo.apk" download>Скачать APK</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>by_sav4ik</footer>
+</div>
+<script>
+(function(){
+var d=document,de=d.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+de.classList.add('js');
+var h=d.querySelector('h1');
+h.innerHTML=h.textContent.trim().split(/\s+/).map(function(w,i){return '<span class="w" style="--i:'+i+'">'+w+'</span>'}).join(' ');
+
+var els=d.querySelectorAll('section h2,.row,.pane,.prio,.steps li,.plus>*,.dl,.hero .lead,.hero .btn,.hero .note,.track'),seen=new Map();
+els.forEach(function(el){
+  var n=seen.get(el.parentNode)||0;seen.set(el.parentNode,n+1);
+  el.classList.add('rv');
+  if(el.matches('.track,.plus>ul,.pane:last-child')||(el.matches('.row')&&n%2))el.classList.add('r');
+  el.style.setProperty('--d',Math.min(n,4)*.13+'s');
+});
+if(rm||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});h.classList.add('in')}
+else{
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){io.observe(e)});io.observe(h);
+}
+
+var bar=d.getElementById('prog');
+function sc(){var m=de.scrollHeight-innerHeight;bar.style.setProperty('--p',m>0?Math.min(scrollY/m,1):0)}
+addEventListener('scroll',sc,{passive:true});sc();
+
+var st=d.querySelectorAll('.stages li'),ttl=d.getElementById('ttl'),eta=d.getElementById('eta'),dot=d.getElementById('dot'),svg=d.querySelector('.track svg');
+var T=['Курьер в пути','Курьер на месте!','Заказ доставлен'],E=['~12 мин','сейчас','готово'];
+function set(i){st.forEach(function(li,k){li.classList.toggle('on',k<=i)});ttl.textContent=T[i];eta.textContent=E[i]}
+if(rm){var a=dot.querySelector('animateMotion');if(a)a.remove();dot.setAttribute('transform','translate(200 40)')}
+else{(function loop(){try{svg.setCurrentTime(0)}catch(e){}set(0);setTimeout(function(){set(1)},4900);setTimeout(function(){set(2)},6200);setTimeout(loop,7900)})()}
+
+var seg=d.querySelectorAll('.seg button'),pr=d.getElementById('pr'),cur=4000,raf;
+seg.forEach(function(b){b.addEventListener('click',function(){
+  seg.forEach(function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});
+  d.getElementById('pu').textContent=b.dataset.u;d.getElementById('pn').textContent=b.dataset.n;
+  var from=cur,to=+b.dataset.p,t0=performance.now();cur=to;cancelAnimationFrame(raf);
+  function f(t){var k=Math.min((t-t0)/600,1),e=1-Math.pow(1-k,3);pr.textContent=Math.round(from+(to-from)*e).toLocaleString('ru-RU');if(k<1)raf=requestAnimationFrame(f)}
+  if(rm)pr.textContent=to.toLocaleString('ru-RU');else raf=requestAnimationFrame(f);
+})});
+
+d.querySelectorAll('.btn').forEach(function(b){b.addEventListener('click',function(){
+  if(rm)return;var r=b.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,c=['#FFC21A','#3D7BFF','#22C08A'];
+  for(var i=0;i<20;i++)(function(el){
+    var a=Math.random()*6.283,k=60+Math.random()*100;
+    el.className='cf';el.style.left=x+'px';el.style.top=y+'px';el.style.background=c[i%3];d.body.appendChild(el);
+    el.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:'translate('+Math.cos(a)*k+'px,'+(Math.sin(a)*k+50)+'px) rotate('+Math.random()*600+'deg)',opacity:0}],{duration:900+Math.random()*400,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=function(){el.remove()};
+  })(d.createElement('i'));
+})});
+var m=location.hostname.match(/^(.+)\.github\.io$/),apk=d.getElementById('apk');
+if(m)apk.href='https://github.com/'+m[1]+'/'+(location.pathname.split('/')[1]||location.hostname)+'/releases/latest/download/toogoo.apk';
+})();
+</script>
+</body>
+</html>
