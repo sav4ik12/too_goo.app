@@ -232,7 +232,7 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:14px}
           <p class="muted">Для тех, кто заказывает регулярно. Без обязательств: отменить можно в любой момент.</p>
           <div class="seg" role="group" aria-label="Период подписки">
             <button type="button" class="on" aria-pressed="true" data-p="4000" data-u="в год" data-n="Выгоднее, чем платить помесячно, на 3 200 ₽ в год">Год</button>
-            <button type="button" aria-pressed="false" data-p="600" data-u="в месяц" data-n="О��лата помесячно, отмена в любой момент">Месяц</button>
+            <button type="button" aria-pressed="false" data-p="600" data-u="в месяц" data-n="О����лата помесячно, отмена в любой момент">Месяц</button>
           </div>
           <p class="price"><span id="pr">4 000</span> ₽<small id="pu">в год</small></p>
           <p class="muted" id="pn">Выгоднее, чем платить помесячно, на 3 200 ₽ в год</p>
@@ -260,8 +260,11 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:14px}
 var d=document,de=d.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
 de.classList.add('js');
 if('scrollRestoration' in history)history.scrollRestoration='manual';
-if(!location.hash)scrollTo(0,0);
-addEventListener('load',function(){if(!location.hash)scrollTo(0,0)});
+function toTop(){if(!location.hash)scrollTo(0,0)}
+toTop();
+addEventListener('DOMContentLoaded',toTop);
+addEventListener('load',toTop);
+addEventListener('pageshow',function(e){if(e.persisted)toTop()});
 var h=d.querySelector('h1');
 h.innerHTML=h.textContent.trim().split(/\s+/).map(function(w,i){return '<span class="w" style="--i:'+i+'">'+w+'</span>'}).join(' ');
 
